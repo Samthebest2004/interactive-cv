@@ -27,17 +27,16 @@ const projects = [
 ];
 
 export default function Projects() {
-  const [unlocked, setUnlocked] = useState([true, false, false]);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [completed, setCompleted] = useState(new Array(projects.length).fill(false));
 
-  const handleExpand = (index: number) => {
-    if (!unlocked[index]) return; // Prevent opening locked projects
+  const toggleExpand = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
-    if (index + 1 < projects.length) {
-      setUnlocked((prev) => {
-        const newUnlocked = [...prev];
-        newUnlocked[index + 1] = true; // Unlock the next project
-        return newUnlocked;
+    if (!completed[index]) {
+      setCompleted((prev) => {
+        const newCompleted = [...prev];
+        newCompleted[index] = true;
+        return newCompleted;
       });
     }
   };
@@ -45,34 +44,31 @@ export default function Projects() {
   return (
     <motion.section
       id="projects"
-      className="max-w-4xl mx-auto text-center py-10 px-4"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 1 }}
+      className="max-w-4xl mx-auto text-center py-10 px-4 bg-gray-100 dark:bg-gray-800 shadow-lg rounded-lg"
     >
-      {/* ✅ Title */}
       <motion.h2
-        className="text-5xl font-bold text-gray-800 dark:text-white mb-6"
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5, type: "spring" }}
+        className="text-5xl font-bold text-gray-800 dark:text-white mb-6"
       >
-        Projects
+        Projects 🏗️
       </motion.h2>
-
-      {/* ✅ Gamification Progress Bar */}
+      
+      {/* ✅ Progress Bar for Unlocking Projects */}
       <div className="flex justify-center items-center space-x-2 mb-6">
         {projects.map((_, index) => (
           <motion.span
             key={index}
-            className={`w-6 h-6 rounded-full ${
-              unlocked[index] ? "bg-green-500" : "bg-gray-400"
-            } flex items-center justify-center text-white text-sm`}
+            className={`w-6 h-6 rounded-full ${completed[index] ? "bg-green-500" : "bg-gray-400"} flex items-center justify-center text-white text-sm`}
             initial={{ scale: 0.8 }}
-            animate={{ scale: unlocked[index] ? 1.2 : 1 }}
+            animate={{ scale: completed[index] ? 1.2 : 1 }}
             transition={{ duration: 0.3 }}
           >
-            {unlocked[index] ? "✅" : "🔒"}
+            {completed[index] ? "✅" : "🔒"}
           </motion.span>
         ))}
       </div>
@@ -82,35 +78,21 @@ export default function Projects() {
         {projects.map((project, index) => (
           <motion.div
             key={index}
-            className={`p-6 border rounded-lg shadow-md transition transform ${
-              unlocked[index] ? "hover:scale-105" : "opacity-50 cursor-not-allowed"
-            } bg-white dark:bg-gray-700`}
-            whileHover={unlocked[index] ? { scale: 1.05 } : {}}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.2, type: "spring" }}
+            className="p-6 border border-gray-300 dark:border-gray-700 rounded-lg shadow-md transition transform hover:scale-105 bg-white dark:bg-gray-700"
           >
-            {/* ✅ Project Title */}
             <h3 className="text-2xl font-semibold flex items-center justify-center">
               {project.icon} {project.title}
             </h3>
-
-            {/* ✅ Short Description */}
             <p className="text-gray-600 dark:text-gray-300 mt-2">{project.shortDescription}</p>
-
-            {/* ✅ Unlock Message */}
-            {!unlocked[index] && (
-              <p className="text-red-500 mt-2">🔒 Unlock previous projects to access this!</p>
-            )}
-
-            {/* ✅ Learn More Button */}
             <button
-              className={`text-blue-500 hover:underline mt-4 block ${
-                unlocked[index] ? "" : "cursor-not-allowed opacity-50"
-              }`}
-              onClick={() => handleExpand(index)}
+              className="text-blue-500 hover:underline mt-4 block"
+              onClick={() => toggleExpand(index)}
             >
               {expandedIndex === index ? "Show Less" : "Learn More"}
             </button>
-
-            {/* ✅ Expanded Full Description */}
             {expandedIndex === index && (
               <motion.p
                 initial={{ opacity: 0, height: 0 }}
@@ -124,15 +106,6 @@ export default function Projects() {
           </motion.div>
         ))}
       </div>
-
-      {/* ✅ Encouragement Message */}
-      <motion.p
-        className="mt-6 text-gray-500 dark:text-gray-400 text-lg"
-        animate={{ opacity: unlocked[unlocked.length - 1] ? 0 : 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        🎮 Keep unlocking projects by clicking "Learn More" to explore my full journey!
-      </motion.p>
     </motion.section>
   );
 }

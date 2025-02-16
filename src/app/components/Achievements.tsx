@@ -33,13 +33,14 @@ export default function Achievements() {
   const [unlocked, setUnlocked] = useState([true, false, false, false]);
 
   useEffect(() => {
-    // ✅ Automatically unlock next achievement when scrolling
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight;
       const achievementSections = document.querySelectorAll(".achievement-card");
 
       achievementSections.forEach((section, index) => {
-        if (scrollPosition > section.offsetTop && !unlocked[index]) {
+        const sectionElement = section as HTMLElement; // ✅ Ensures TypeScript treats it correctly
+
+        if (sectionElement && scrollPosition > sectionElement.offsetTop && !unlocked[index]) {
           setUnlocked((prev) => {
             const newUnlocked = [...prev];
             newUnlocked[index] = true;
