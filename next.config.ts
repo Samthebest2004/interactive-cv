@@ -2,10 +2,11 @@
 const nextConfig = {
   output: "export", // Enables static export for GitHub Pages
   images: {
-    unoptimized: true, // Fix for GitHub Pages image loading
+    unoptimized: true, // GitHub Pages doesn't support Next.js image optimization
   },
-  basePath: "/interactive-cv", // Set to your repository name
-  assetPrefix: "/interactive-cv/", // Prefix for static assets
+  basePath: "/interactive-cv", // Must match EXACTLY your GitHub repo name (case-sensitive)
+  assetPrefix: "/interactive-cv/", // Ensures assets load from /interactive-cv/...
+  trailingSlash: true, // Adds a slash to every route (/about -> /about/)
 };
 
 export default nextConfig;
